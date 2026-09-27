@@ -127,6 +127,8 @@ cmake .. \
   -DFUJINET_TARGET=COCO \
   -DWITH_ZLIB=OFF \
   -DWITH_MBEDTLS=ON \
+  -DCMAKE_DISABLE_FIND_PACKAGE_GnuTLS=TRUE \
+  -DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=TRUE \
   -DEXPAT_INCLUDE_DIR=$(pwd)/../../deps/expat-install-arm/include \
   -DEXPAT_LIBRARY_RELEASE=$(pwd)/../../deps/expat-install-arm/lib/libexpat.a \
   -DMBEDTLS_ROOT_DIR=$(pwd)/../../deps/mbedtls-install-arm
