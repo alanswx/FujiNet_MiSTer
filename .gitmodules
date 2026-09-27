@@ -1,0 +1,3 @@
+[submodule "fujinet-firmware"]
+	path = fujinet-firmware
+	url = https://github.com/FujiNetWIFI/fujinet-firmware.git

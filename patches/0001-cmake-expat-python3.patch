@@ -1,0 +1,32 @@
+diff --git a/fujinet_pc.cmake b/fujinet_pc.cmake
+index 4945ff6..64f51c4 100644
+--- a/fujinet_pc.cmake
++++ b/fujinet_pc.cmake
+@@ -744,7 +744,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+ endif()
+ 
+ 
+-target_include_directories(fujinet PRIVATE ${INCLUDE_DIRS} ${MBEDTLS_INCLUDE_DIR})
++find_package(EXPAT REQUIRED)
++target_include_directories(fujinet PRIVATE ${INCLUDE_DIRS} ${MBEDTLS_INCLUDE_DIR} ${EXPAT_INCLUDE_DIRS})
+ target_link_libraries(fujinet ${CRYPTO_LIBS})
+ 
+ if(DEFINED USE_LIBSERIAL)
+@@ -788,7 +789,7 @@ add_library(gumbo_fn STATIC ${GUMBO_SOURCES})
+ target_include_directories(gumbo_fn PUBLIC ${CMAKE_SOURCE_DIR}/components/gumbo)
+ target_compile_options(gumbo_fn PRIVATE -w) # vendored third-party; suppress its warnings
+ 
+-target_link_libraries(fujinet pthread expat cjson cjson_utils smb2 ssh nfs gumbo_fn)
++target_link_libraries(fujinet pthread ${EXPAT_LIBRARIES} cjson cjson_utils smb2 ssh nfs gumbo_fn)
+ 
+ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+     target_link_libraries(fujinet ws2_32 bcrypt)
+@@ -799,7 +800,7 @@ endif()
+ file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/include")
+ add_custom_target(build_version
+     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+-    COMMAND python build_version_pc.py "${CMAKE_SOURCE_DIR}/include/version.h" "${CMAKE_BINARY_DIR}/include/build_version.h"
++    COMMAND python3 build_version_pc.py "${CMAKE_SOURCE_DIR}/include/version.h" "${CMAKE_BINARY_DIR}/include/build_version.h"
+     BYPRODUCTS "${CMAKE_BINARY_DIR}/include/build_version.h"
+     COMMENT "Create build_version.h file"
+     VERBATIM
