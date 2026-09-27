@@ -125,6 +125,8 @@ cmake .. \
   -DCMAKE_CXX_COMPILER=${ARM_PREFIX}g++ \
   -DCMAKE_BUILD_TYPE=Release \
   -DFUJINET_TARGET=COCO \
+  -DWITH_ZLIB=OFF \
+  -DWITH_MBEDTLS=ON \
   -DEXPAT_INCLUDE_DIR=$(pwd)/../../deps/expat-install-arm/include \
   -DEXPAT_LIBRARY_RELEASE=$(pwd)/../../deps/expat-install-arm/lib/libexpat.a \
   -DMBEDTLS_ROOT_DIR=$(pwd)/../../deps/mbedtls-install-arm

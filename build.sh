@@ -59,6 +59,8 @@ CMAKE_ARGS=(
     "-DCMAKE_CXX_COMPILER=${CXX}"
     "-DCMAKE_BUILD_TYPE=Release"
     "-DFUJINET_TARGET=${TARGET}"
+    "-DWITH_ZLIB=OFF"
+    "-DWITH_MBEDTLS=ON"
 )
 
 if [ -d "${EXPAT_DIR}" ]; then
