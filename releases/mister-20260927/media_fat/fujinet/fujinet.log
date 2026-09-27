@@ -1,0 +1,305 @@
+Starting FujiNet on /dev/ttyS1 at 19200 baud...
+Error in auto_init()
+12:57:53.762374 > 
+12:57:53.767182 > 
+12:57:53.771188 > --~--~--~--
+12:57:53.775184 > FujiNet v1.6-6ae6884* 2026-09-24 20:19:46 (COCO) Started @ 6
+12:57:53.779223 > Detected Hardware Version: fujinet-pc
+12:57:53.783166 > SPIFFS mounted.
+12:57:53.787254 > SD mounted (directory "/media/fat/fujinet/SD").
+12:57:53.791232 > fnConfig::load "/media/fat/fujinet/fnconfig.ini"
+12:57:53.795405 > fnConfig::load read 757 bytes from config file
+12:57:53.803504 > Reading wifi section
+12:57:53.806678 > theFuji->setup()
+12:57:53.809229 > FileSystemSPIFFS::filehandler_open /autorun.dsk rb
+12:57:53.811878 > FileSystem::filesize from FileHandler returned 161280
+12:57:53.814170 > DW disk MOUNT /autorun.dsk
+12:57:53.816727 > DSK MOUNT
+12:57:53.819247 > Creating a default printer using FS_SDFAT storage and type 1
+12:57:53.821968 > Setting up serial port /dev/ttyS1
+12:57:53.824535 > ### TTY initialized ###
+12:57:53.829191 > TTY set_baudrate: 19200
+12:57:53.933289 > [0;33m[/home/alans/mister/fujinet-firmware/lib/bus/drivewire/drivewire.cpp:924] setup(): [1;32mDRIVEWIRE MODE[0m
+12:57:53.937182 > Setup complete @ 181 (175ms)
+12:57:58.017869 > Shutdown handler called
+12:57:58.027762 > Clearing Network Device array.
+12:57:58.032217 > All devices shut down.
+Error in auto_init()
+13:45:04.455320 > 
+13:45:04.458180 > 
+13:45:04.462144 > --~--~--~--
+13:45:04.466138 > FujiNet v1.6-6ae6884* 2026-09-24 20:19:46 (COCO) Started @ 4
+13:45:04.470179 > Detected Hardware Version: fujinet-pc
+13:45:04.473755 > SPIFFS mounted.
+13:45:04.478201 > SD mounted (directory "/media/fat/fujinet/SD").
+13:45:04.482180 > fnConfig::load "/media/fat/fujinet/fnconfig.ini"
+13:45:04.486332 > fnConfig::load read 757 bytes from config file
+13:45:04.491151 > Reading wifi section
+13:45:04.495412 > theFuji->setup()
+13:45:04.503182 > FileSystemSPIFFS::filehandler_open /autorun.dsk rb
+13:45:04.507250 > FileSystem::filesize from FileHandler returned 161280
+13:45:04.511154 > DW disk MOUNT /autorun.dsk
+13:45:04.516143 > DSK MOUNT
+13:45:04.520188 > Creating a default printer using FS_SDFAT storage and type 1
+13:45:04.524213 > Setting up serial port /dev/ttyS1
+13:45:04.532386 > ### TTY initialized ###
+13:45:04.540217 > TTY set_baudrate: 19200
+13:45:04.642971 > [0;33m[/home/alans/mister/fujinet-firmware/lib/bus/drivewire/drivewire.cpp:924] setup(): [1;32mDRIVEWIRE MODE[0m
+13:45:04.645220 > Setup complete @ 194 (190ms)
+13:45:04.647694 > DummyWiFiManager::start
+13:45:04.650200 > Starting web server http://0.0.0.0:8000
+13:45:33.200618 > Opening file for parsing: '/www/index.html'
+13:45:33.213413 > FileSystemSDFAT::dir_open "/FujiNet"
+13:45:33.217198 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+13:45:33.221247 > AppKeyManager: could not open /FujiNet
+13:45:33.232734 > SSE client disconnected, remaining clients: 0
+13:45:33.375599 > Opening file for parsing: '/www/index.html'
+13:45:33.383747 > FileSystemSDFAT::dir_open "/FujiNet"
+13:45:33.388189 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+13:45:33.393166 > AppKeyManager: could not open /FujiNet
+13:45:33.404432 > SSE client disconnected, remaining clients: 0
+13:45:53.959884 > Opening file for parsing: '/www/index.html'
+13:45:53.971821 > FileSystemSDFAT::dir_open "/FujiNet"
+13:45:53.976200 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+13:45:53.980236 > FileSystemSDFAT::dir_open I do not have a pattern.
+13:47:53.455574 > Opening file for parsing: '/www/index.html'
+13:47:53.467740 > FileSystemSDFAT::dir_open "/FujiNet"
+13:47:53.472121 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+13:47:53.480263 > FileSystemSDFAT::dir_open I do not have a pattern.
+13:48:37.386852 > Opening file for parsing: '/www/index.html'
+13:48:37.394794 > FileSystemSDFAT::dir_open "/FujiNet"
+13:48:37.397176 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+13:48:37.399755 > FileSystemSDFAT::dir_open I do not have a pattern.
+13:49:25.235893 > Opening file for parsing: '/www/index.html'
+13:49:25.247728 > FileSystemSDFAT::dir_open "/FujiNet"
+13:49:25.252191 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+13:49:25.256227 > FileSystemSDFAT::dir_open I do not have a pattern.
+13:49:25.266699 > SSE client disconnected, remaining clients: 0
+13:50:18.651694 > ::mount {0} "SD"
+13:50:18.656162 > ::mount_local Attempting mount of "SD"
+13:50:18.658162 > Setting type to LOCAL
+13:50:18.660150 > Selecting '/autorun.dsk' from host #0 as rb on D1:
+13:50:18.662140 > fujiHost #0:SD opening file path "/autorun.dsk"
+13:50:18.664197 > fopen = /autorun.dsk rb : ok
+13:50:18.668152 > ::get_filesize
+13:50:18.672197 > FileSystem::filesize from FileHandler returned 161280
+13:50:18.676147 > DW disk MOUNT /autorun.dsk
+13:50:18.680176 > DSK MOUNT
+13:50:18.684194 > fnConfig::save "/media/fat/fujinet/fnconfig.ini"
+13:50:18.688439 > fnConfig::save wrote 1401 bytes
+13:50:18.697183 > fujiHost::set_hostname new name matches old - nothing changes
+13:50:18.701181 > Opening file for parsing: '/www/redirect_to_index.html'
+13:50:18.707179 > SSE client disconnected, remaining clients: 0
+13:50:18.753384 > Opening file for parsing: '/www/index.html'
+13:50:18.764404 > FileSystemSDFAT::dir_open "/FujiNet"
+13:50:18.772182 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+13:50:18.776224 > FileSystemSDFAT::dir_open I do not have a pattern.
+13:50:18.791466 > SSE client disconnected, remaining clients: 0
+13:50:31.358805 > Opening file for parsing: '/www/index.html'
+13:50:31.367758 > FileSystemSDFAT::dir_open "/FujiNet"
+13:50:31.370183 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+13:50:31.372764 > FileSystemSDFAT::dir_open I do not have a pattern.
+13:50:45.209742 > Shutdown handler called
+13:50:45.218232 > Clearing Network Device array.
+13:50:45.222286 > All devices shut down.
+13:50:45.226568 > Stopping web service
+13:50:45.232658 > SSE client disconnected, remaining clients: 0
+13:50:45.237661 > SSE client disconnected, remaining clients: 0
+13:50:45.242627 > SSE client disconnected, remaining clients: 0
+13:50:45.248244 > SSE client disconnected, remaining clients: 0
+13:50:45.256698 > SSE client disconnected, remaining clients: 0
+Error in auto_init()
+13:50:45.462358 > 
+13:50:45.471162 > 
+13:50:45.473141 > --~--~--~--
+13:50:45.475131 > FujiNet v1.6-6ae6884* 2026-09-24 20:19:46 (COCO) Started @ 9
+13:50:45.477166 > Detected Hardware Version: fujinet-pc
+13:50:45.479139 > SPIFFS mounted.
+13:50:45.481193 > SD mounted (directory "/media/fat/fujinet/SD").
+13:50:45.485166 > fnConfig::load "/media/fat/fujinet/fnconfig.ini"
+13:50:45.487503 > fnConfig::load read 1399 bytes from config file
+13:50:45.490475 > Reading wifi section
+13:50:45.494762 > theFuji->setup()
+13:50:45.499172 > FileSystemSPIFFS::filehandler_open /autorun.dsk rb
+13:50:45.503244 > FileSystem::filesize from FileHandler returned 161280
+13:50:45.507148 > DW disk MOUNT /autorun.dsk
+13:50:45.511192 > DSK MOUNT
+13:50:45.515183 > Creating a default printer using FS_SDFAT storage and type 1
+13:50:45.519204 > Setting up serial port /dev/ttyS1
+13:50:45.523380 > ### TTY initialized ###
+13:50:45.527158 > TTY set_baudrate: 19200
+13:50:45.638043 > [0;33m[/home/alans/mister/fujinet-firmware/lib/bus/drivewire/drivewire.cpp:924] setup(): [1;32mDRIVEWIRE MODE[0m
+13:50:45.642156 > Setup complete @ 189 (180ms)
+13:50:45.646146 > DummyWiFiManager::start
+13:50:45.650191 > Starting web server http://0.0.0.0:8000
+13:50:55.327724 > Opening file for parsing: '/www/index.html'
+13:50:55.339486 > FileSystemSDFAT::dir_open "/FujiNet"
+13:50:55.342083 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+13:50:55.344254 > FileSystemSDFAT::dir_open I do not have a pattern.
+13:56:05.802779 > SSE client disconnected, remaining clients: 0
+13:56:05.811402 > SSE client disconnected, remaining clients: 0
+13:56:05.815511 > SSE client disconnected, remaining clients: 0
+13:56:05.819545 > SSE client disconnected, remaining clients: 0
+13:57:48.852891 > ::mount {0} "SD"
+13:57:48.857171 > ::mount_local Attempting mount of "SD"
+13:57:48.861146 > Setting type to LOCAL
+13:57:48.866096 > Selecting '/autorun.dsk' from host #0 as rb on D2:
+13:57:48.870135 > fujiHost #0:SD opening file path "/autorun.dsk"
+13:57:48.874189 > fopen = /autorun.dsk rb : ok
+13:57:48.878138 > ::get_filesize
+13:57:48.886178 > FileSystem::filesize from FileHandler returned 161280
+13:57:48.888653 > DW disk MOUNT /autorun.dsk
+13:57:48.891105 > DSK MOUNT
+13:57:48.893170 > fnConfig::save "/media/fat/fujinet/fnconfig.ini"
+13:57:48.895382 > fnConfig::save wrote 1452 bytes
+13:57:48.900155 > fujiHost::set_hostname new name matches old - nothing changes
+13:57:48.904155 > Opening file for parsing: '/www/redirect_to_index.html'
+13:57:48.909194 > SSE client disconnected, remaining clients: 0
+13:57:48.952165 > Opening file for parsing: '/www/index.html'
+13:57:48.959077 > FileSystemSDFAT::dir_open "/FujiNet"
+13:57:48.963182 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+13:57:48.967208 > FileSystemSDFAT::dir_open I do not have a pattern.
+13:57:48.981316 > SSE client disconnected, remaining clients: 0
+14:07:20.224572 > Opening file for parsing: '/www/index.html'
+14:07:20.238085 > FileSystemSDFAT::dir_open "/FujiNet"
+14:07:20.242176 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+14:07:20.246217 > FileSystemSDFAT::dir_open I do not have a pattern.
+14:12:21.389156 > SSE client disconnected, remaining clients: 0
+14:12:21.401385 > SSE client disconnected, remaining clients: 0
+14:12:21.409482 > SSE client disconnected, remaining clients: 0
+14:12:21.417539 > SSE client disconnected, remaining clients: 0
+14:12:47.403192 > Opening file for parsing: '/www/index.html'
+14:12:47.414195 > FileSystemSDFAT::dir_open "/FujiNet"
+14:12:47.416789 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+14:12:47.419235 > FileSystemSDFAT::dir_open I do not have a pattern.
+14:13:52.467179 > SSE client disconnected, remaining clients: 0
+14:13:52.472344 > SSE client disconnected, remaining clients: 0
+14:13:52.474887 > Opening file for parsing: '/www/index.html'
+14:13:52.481321 > FileSystemSDFAT::dir_open "/FujiNet"
+14:13:52.485176 > FileSystemSDFAT::dir_open - opendir "/media/fat/fujinet/SD/FujiNet"
+14:13:52.489232 > FileSystemSDFAT::dir_open I do not have a pattern.
+14:15:47.721653 > SSE client disconnected, remaining clients: 0
+14:18:07.712184 > Shutdown handler called
+14:18:07.724251 > Clearing Network Device array.
+14:18:07.733604 > All devices shut down.
+14:18:07.738436 > Stopping web service
+14:18:07.744503 > SSE client disconnected, remaining clients: 0
+14:18:07.751583 > SSE client disconnected, remaining clients: 0
+14:18:07.754367 > SSE client disconnected, remaining clients: 0
+14:18:07.757237 > SSE client disconnected, remaining clients: 0
+Error in auto_init()
+14:19:48.032903 > 
+14:19:48.037162 > 
+14:19:48.041142 > --~--~--~--
+14:19:48.045135 > FujiNet v1.6-6ae6884* 2026-09-24 20:19:46 (COCO) Started @ 3
+14:19:48.049173 > Detected Hardware Version: fujinet-pc
+14:19:48.053179 > SPIFFS mounted.
+14:19:48.057196 > SD mounted (directory "/media/fat/fujinet/SD").
+14:19:48.061169 > fnConfig::load "/media/fat/fujinet/fnconfig.ini"
+14:19:48.065341 > fnConfig::load read 1448 bytes from config file
+14:19:48.069489 > Reading wifi section
+14:19:48.077921 > theFuji->setup()
+14:19:48.082183 > FileSystemSPIFFS::filehandler_open /autorun.dsk rb
+14:19:48.086272 > FileSystem::filesize from FileHandler returned 161280
+14:19:48.094151 > DW disk MOUNT /autorun.dsk
+14:19:48.098168 > DSK MOUNT
+14:19:48.102181 > Creating a default printer using FS_SDFAT storage and type 1
+14:19:48.109207 > Setting up serial port /dev/ttyS1
+14:19:48.111952 > ### TTY initialized ###
+14:19:48.114154 > TTY set_baudrate: 9600
+14:19:48.216709 > [0;33m[/home/alans/mister/fujinet-firmware/lib/bus/drivewire/drivewire.cpp:924] setup(): [1;32mDRIVEWIRE MODE[0m
+14:19:48.219158 > Setup complete @ 190 (187ms)
+14:19:48.221137 > DummyWiFiManager::start
+14:19:48.223212 > Starting web server http://0.0.0.0:8000
+14:20:20.694896 > Shutdown handler called
+14:20:20.703268 > Clearing Network Device array.
+14:20:20.707319 > All devices shut down.
+14:20:20.712470 > Stopping web service
+14:20:20.718449 > SSE client disconnected, remaining clients: 0
+Error in auto_init()
+14:20:20.974335 > 
+14:20:20.979165 > 
+14:20:20.983149 > --~--~--~--
+14:20:20.991152 > FujiNet v1.6-6ae6884* 2026-09-24 20:19:46 (COCO) Started @ 6
+14:20:20.993166 > Detected Hardware Version: fujinet-pc
+14:20:20.995145 > SPIFFS mounted.
+14:20:20.997211 > SD mounted (directory "/media/fat/fujinet/SD").
+14:20:20.999721 > fnConfig::load "/media/fat/fujinet/fnconfig.ini"
+14:20:21.001856 > fnConfig::load read 1450 bytes from config file
+14:20:21.004406 > Reading wifi section
+14:20:21.007660 > theFuji->setup()
+14:20:21.010185 > FileSystemSPIFFS::filehandler_open /autorun.dsk rb
+14:20:21.014250 > FileSystem::filesize from FileHandler returned 161280
+14:20:21.018146 > DW disk MOUNT /autorun.dsk
+14:20:21.022170 > DSK MOUNT
+14:20:21.026189 > Creating a default printer using FS_SDFAT storage and type 1
+14:20:21.030206 > Setting up serial port /dev/ttyS1
+14:20:21.034305 > ### TTY initialized ###
+14:20:21.038154 > TTY set_baudrate: 19200
+14:20:21.142222 > [0;33m[/home/alans/mister/fujinet-firmware/lib/bus/drivewire/drivewire.cpp:924] setup(): [1;32mDRIVEWIRE MODE[0m
+14:20:21.146159 > Setup complete @ 178 (172ms)
+14:20:21.150143 > DummyWiFiManager::start
+14:20:21.154197 > Starting web server http://0.0.0.0:8000
+14:21:11.117910 > Shutdown handler called
+14:21:11.124927 > Clearing Network Device array.
+14:21:11.127757 > All devices shut down.
+14:21:11.130587 > Stopping web service
+14:21:11.134352 > SSE client disconnected, remaining clients: 0
+Error in auto_init()
+14:22:13.336301 > 
+14:22:13.341158 > 
+14:22:13.345135 > --~--~--~--
+14:22:13.349135 > FujiNet v1.6-6ae6884* 2026-09-24 20:19:46 (COCO) Started @ 6
+14:22:13.353161 > Detected Hardware Version: fujinet-pc
+14:22:13.357137 > SPIFFS mounted.
+14:22:13.361187 > SD mounted (directory "/media/fat/fujinet/SD").
+14:22:13.365162 > fnConfig::load "/media/fat/fujinet/fnconfig.ini"
+14:22:13.369310 > fnConfig::load read 1450 bytes from config file
+14:22:13.373709 > Reading wifi section
+14:22:13.382783 > theFuji->setup()
+14:22:13.385181 > FileSystemSPIFFS::filehandler_open /autorun.dsk rb
+14:22:13.387239 > FileSystem::filesize from FileHandler returned 161280
+14:22:13.389708 > DW disk MOUNT /autorun.dsk
+14:22:13.392157 > DSK MOUNT
+14:22:13.394170 > Creating a default printer using FS_SDFAT storage and type 1
+14:22:13.396727 > Setting up serial port /dev/ttyS1
+14:22:13.399376 > ### TTY initialized ###
+14:22:13.401710 > TTY set_baudrate: 19200
+14:22:13.506209 > [0;33m[/home/alans/mister/fujinet-firmware/lib/bus/drivewire/drivewire.cpp:924] setup(): [1;32mDRIVEWIRE MODE[0m
+14:22:13.510155 > Setup complete @ 180 (174ms)
+14:22:13.514140 > DummyWiFiManager::start
+14:22:13.518189 > Starting web server http://0.0.0.0:8000
+14:22:15.912207 > Shutdown handler called
+14:22:15.916248 > Clearing Network Device array.
+14:22:15.920284 > All devices shut down.
+14:22:15.924435 > Stopping web service
+14:22:15.933473 > SSE client disconnected, remaining clients: 0
+Error in auto_init()
+14:22:16.156303 > 
+14:22:16.164153 > 
+14:22:16.168152 > --~--~--~--
+14:22:16.172139 > FujiNet v1.6-6ae6884* 2026-09-24 20:19:46 (COCO) Started @ 6
+14:22:16.180175 > Detected Hardware Version: fujinet-pc
+14:22:16.244144 > SPIFFS mounted.
+14:22:16.246195 > SD mounted (directory "/media/fat/fujinet/SD").
+14:22:16.248717 > fnConfig::load "/media/fat/fujinet/fnconfig.ini"
+14:22:16.251324 > fnConfig::load read 1450 bytes from config file
+14:22:16.253702 > Reading wifi section
+14:22:16.256769 > theFuji->setup()
+14:22:16.259177 > FileSystemSPIFFS::filehandler_open /autorun.dsk rb
+14:22:16.261748 > FileSystem::filesize from FileHandler returned 161280
+14:22:16.266136 > DW disk MOUNT /autorun.dsk
+14:22:16.270158 > DSK MOUNT
+14:22:16.274180 > Creating a default printer using FS_SDFAT storage and type 1
+14:22:16.278197 > Setting up serial port /dev/ttyS1
+14:22:16.282371 > ### TTY initialized ###
+14:22:16.286154 > TTY set_baudrate: 19200
+14:22:16.390192 > [0;33m[/home/alans/mister/fujinet-firmware/lib/bus/drivewire/drivewire.cpp:924] setup(): [1;32mDRIVEWIRE MODE[0m
+14:22:16.396158 > Setup complete @ 246 (240ms)
+14:22:16.400138 > DummyWiFiManager::start
+14:22:16.404187 > Starting web server http://0.0.0.0:8000
+14:34:22.057166 > Shutdown handler called
+14:34:22.062288 > Clearing Network Device array.
+14:34:22.064900 > All devices shut down.
+14:34:22.067421 > Stopping web service
+14:34:22.071244 > SSE client disconnected, remaining clients: 0
