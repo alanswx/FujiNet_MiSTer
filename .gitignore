@@ -5,3 +5,4 @@ dist/
 deps/
 *.log
 .DS_Store
+build_arm_*/

@@ -1,0 +1,48 @@
+diff --git a/lib/bus/adamnet/adamnet.cpp b/lib/bus/adamnet/adamnet.cpp
+index 877f6596c..a1ed8c052 100755
+--- a/lib/bus/adamnet/adamnet.cpp
++++ b/lib/bus/adamnet/adamnet.cpp
+@@ -520,10 +520,24 @@ void systemBus::setup()
+     }
+     else
+     {
++        // A real serial port: the one [Serial] names, at its baud (the MiSTer
++        // core's AdamNet master runs the link at the UART speed the OSD picks;
++        // without a configured baud, the bus's own 62,500).
++        int baud = Config.get_serial_baud();
++        // readTimeout is per chunk of a packet. 2 ms is fine for a UART FIFO,
++        // but a Linux tty hands bytes up from the line discipline's work queue
++        // and can sit on the tail of a 9 byte packet for several ms (seen on a
++        // MiSTer, kernel 6.18: the length bytes arrived, the payload did not,
++        // and every block read was NAKed). The master waits 300 ms for us.
++        // No discard window either: on the one-wire bus it drops the echo of
++        // our own reply, but a tty is two wires with no echo, and on Linux
++        // flushOutput() returns late enough (tcdrain sleeps in jiffies) that
++        // the window would swallow the master's next command instead.
+         _serial.begin(ChannelConfig()
+-                    .baud(ADAMNET_BAUDRATE)
+-                    .readTimeout(2.0)
+-                    .discardTimeout(0.180)
++                    .deviceID(Config.get_serial_port())
++                    .baud(baud > 0 ? baud : ADAMNET_BAUDRATE)
++                    .readTimeout(100)
++                    .discardTimeout(0)
+                     );
+         _port = &_serial;
+     }
+diff --git a/lib/config/fnc_save.cpp b/lib/config/fnc_save.cpp
+index 8e8822cd4..ec3013889 100644
+--- a/lib/config/fnc_save.cpp
++++ b/lib/config/fnc_save.cpp
+@@ -210,9 +210,9 @@ void fnConfig::save()
+     // SERIAL
+     ss << LINETERM << "[Serial]" << LINETERM;
+     ss << "port=" << _serial.port << LINETERM;
+-#ifdef BUILD_COCO
++    // Every PC build that opens a real port needs its baud back next time (the
++    // ADAM's came back as the 57600 default once CONFIG had saved the config)
+     ss << "baud=" << _serial.baud << LINETERM;
+-#endif
+ #ifdef BUILD_ATARI
+     ss << "command=" << std::string(_serial_command_pin_names[_serial.command]) << LINETERM;
+     ss << "proceed=" << std::string(_serial_proceed_pin_names[_serial.proceed]) << LINETERM;

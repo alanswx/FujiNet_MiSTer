@@ -4,10 +4,17 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FUJINET_DIR="${SCRIPT_DIR}/fujinet-firmware"
-PATCH_FILE="${SCRIPT_DIR}/patches/0001-cmake-expat-python3.patch"
 TARGET="${1:-COCO}"
-BUILD_DIR="${SCRIPT_DIR}/build_arm"
-DIST_DIR="${SCRIPT_DIR}/dist/fujinet"
+# One build tree and one dist per target, so an ADAM build does not clobber the
+# COCO one; both can still be overridden from the environment.
+target_lc=$(echo "${TARGET}" | tr 'A-Z' 'a-z')
+if [ "${TARGET}" = "COCO" ]; then
+    BUILD_DIR="${BUILD_DIR:-${SCRIPT_DIR}/build_arm}"
+    DIST_DIR="${DIST_DIR:-${SCRIPT_DIR}/dist/fujinet}"
+else
+    BUILD_DIR="${BUILD_DIR:-${SCRIPT_DIR}/build_arm_${target_lc}}"
+    DIST_DIR="${DIST_DIR:-${SCRIPT_DIR}/dist/fujinet-${target_lc}}"
+fi
 
 echo "========================================================"
 echo " Building FujiNet for MiSTer HPS (Target: ${TARGET})"
@@ -19,16 +26,20 @@ if [ ! -f "${FUJINET_DIR}/fujinet_pc.cmake" ]; then
     git -C "${SCRIPT_DIR}" submodule update --init --recursive
 fi
 
-# 2. Apply Portability Patch
-echo "Checking patch: ${PATCH_FILE}..."
-if git -C "${FUJINET_DIR}" apply --check "${PATCH_FILE}" 2>/dev/null; then
-    echo "Applying patch..."
-    git -C "${FUJINET_DIR}" apply "${PATCH_FILE}"
-elif git -C "${FUJINET_DIR}" diff | grep -q "find_package(EXPAT REQUIRED)"; then
-    echo "Patch already applied."
-else
-    echo "Warning: Patch could not be applied cleanly; verifying if already patched."
-fi
+# 2. Apply the patches: portability (0001) and whatever else patches/ holds, each
+#    skipped when it is already in the tree (it then applies in reverse).
+for p in "${SCRIPT_DIR}"/patches/*.patch; do
+    [ -f "${p}" ] || continue
+    echo "Checking patch: ${p}..."
+    if git -C "${FUJINET_DIR}" apply --check "${p}" 2>/dev/null; then
+        echo "Applying patch..."
+        git -C "${FUJINET_DIR}" apply "${p}"
+    elif git -C "${FUJINET_DIR}" apply --reverse --check "${p}" 2>/dev/null; then
+        echo "Patch already applied."
+    else
+        echo "Warning: ${p} applies neither forwards nor backwards; continuing."
+    fi
+done
 
 # 3. Locate ARM Cross-Compiler
 if [ -z "${ARM_PREFIX}" ]; then
@@ -113,12 +124,18 @@ elif [ -d "${FUJINET_DIR}/data" ]; then
 fi
 
 # Copy Config, Scripts & ROMs
-cp "${SCRIPT_DIR}/config/fnconfig.ini" "${DIST_DIR}/"
+# A target with its own config (config/fnconfig-<target>.ini) gets that, else the CoCo one
+if [ -f "${SCRIPT_DIR}/config/fnconfig-${target_lc}.ini" ]; then
+    cp "${SCRIPT_DIR}/config/fnconfig-${target_lc}.ini" "${DIST_DIR}/fnconfig.ini"
+else
+    cp "${SCRIPT_DIR}/config/fnconfig.ini" "${DIST_DIR}/"
+fi
 cp "${SCRIPT_DIR}/scripts/start_fujinet.sh" "${DIST_DIR}/"
 cp "${SCRIPT_DIR}/scripts/run-fujinet" "${DIST_DIR}/"
 chmod +x "${DIST_DIR}/start_fujinet.sh" "${DIST_DIR}/run-fujinet" "${DIST_DIR}/fujinet"
 
-if [ -d "${SCRIPT_DIR}/roms" ]; then
+# The HDB-DOS cartridges are the CoCo's
+if [ "${TARGET}" = "COCO" ] && [ -d "${SCRIPT_DIR}/roms" ]; then
     cp -r "${SCRIPT_DIR}/roms" "${DIST_DIR}/"
 fi
 

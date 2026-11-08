@@ -1,0 +1,106 @@
+diff --git a/lib/device/NDevice/NDevice.cpp b/lib/device/NDevice/NDevice.cpp
+index d02ddc20e..6827d3cf2 100644
+--- a/lib/device/NDevice/NDevice.cpp
++++ b/lib/device/NDevice/NDevice.cpp
+@@ -474,6 +474,12 @@ void NDevice::fujidev_set_query(const FUJI_COMMAND_PACKET &packet)
+ error_is_true NDevice::parse_and_instantiate_protocol(std::string &deviceSpec, bool is_dir,
+                                                       std::unique_ptr<PeoplesUrlParser> &url_out)
+ {
++    // The Adam's fujinet-lib sends the spec with a control byte in front of
++    // its N: prefix (03 4E 3A ... from weather.ddp). util_remove_n_prefix used
++    // to strip blindly up to the first ':' and so never saw it; now that it
++    // checks for N: at the very start, drop such bytes first.
++    while (!deviceSpec.empty() && static_cast<unsigned char>(deviceSpec[0]) < 0x20)
++        deviceSpec.erase(0, 1);
+     deviceSpec = util_devicespec_fix_for_parsing(deviceSpec, prefix, is_dir, true);
+     url_out = std::make_unique<PeoplesUrlParser>(deviceSpec);
+ 
+@@ -532,6 +538,10 @@ void NDevice::fujidev_set_parser(const FUJI_COMMAND_PACKET &packet)
+ 
+ error_is_true NDevice::fujicore_set_parser(parserMode_t mode)
+ {
++    // No protocol (the open failed): every parser would dereference it.
++    if (_protocol == nullptr)
++        RETURN_ERROR_AS_TRUE();
++
+     switch (mode)
+     {
+     case PARSER::NONE:
+diff --git a/lib/device/NDevice/NDevice.h b/lib/device/NDevice/NDevice.h
+index 060b2b868..ad1a7f2a9 100644
+--- a/lib/device/NDevice/NDevice.h
++++ b/lib/device/NDevice/NDevice.h
+@@ -174,7 +174,7 @@ protected:
+     void fujidev_tcp_close_client(const FUJI_COMMAND_PACKET &packet);
+ 
+     // http ops
+-    void fujidev_http_set_channel_mode(const FUJI_COMMAND_PACKET &packet);
++    virtual void fujidev_http_set_channel_mode(const FUJI_COMMAND_PACKET &packet);
+ 
+     // udp ops
+     void fujidev_udp_get_remote(const FUJI_COMMAND_PACKET &packet);
+diff --git a/lib/device/adamnet/adamNetwork.cpp b/lib/device/adamnet/adamNetwork.cpp
+index bc6e411c9..eb0e0f47e 100644
+--- a/lib/device/adamnet/adamNetwork.cpp
++++ b/lib/device/adamnet/adamNetwork.cpp
+@@ -2,6 +2,7 @@
+ 
+ #include "adamNetwork.h"
+ #include "NParser.h"
++#include "NetworkProtocolFactory.h"
+ #include "debug.h"
+ 
+ #define MAX_ADAM_PACKET_LEN 1024
+@@ -78,4 +79,35 @@ void adamNetwork::adamnet_control_receive()
+     SYSTEM_BUS.transaction_send(buf);
+ }
+ 
++// FCh: [mode], 0 protocol, 1 JSON... (FujiNet Programming Guide for the ADAM)
++void adamNetwork::fujidev_set_parser(const FUJI_COMMAND_PACKET &packet)
++{
++    SYSTEM_BUS.transaction_accept(TRANS_STATE::NO_GET);
++
++    parserMode_t mode = param_cast<parserMode_t>(packet, 0);
++    if (fujicore_set_parser(mode).is_error())
++        SYSTEM_BUS.transaction_error();
++    else
++        SYSTEM_BUS.transaction_success();
++}
++
++// 'M': [mode], body or headers
++void adamNetwork::fujidev_http_set_channel_mode(const FUJI_COMMAND_PACKET &packet)
++{
++    NetworkProtocolHTTP *http = dynamic_cast<NetworkProtocolHTTP *>(_protocol.get());
++    if (!http)
++    {
++        SYSTEM_BUS.transaction_error();
++        return;
++    }
++
++    SYSTEM_BUS.transaction_accept(TRANS_STATE::NO_GET);
++
++    auto mode = param_cast<netProtoHTTPChannelMode_t>(packet, 0);
++    if (http->set_channel_mode(mode) != FUJI_ERROR::NONE)
++        SYSTEM_BUS.transaction_error();
++    else
++        SYSTEM_BUS.transaction_success();
++}
++
+ #endif /* BUILD_ADAM */
+diff --git a/lib/device/adamnet/adamNetwork.h b/lib/device/adamnet/adamNetwork.h
+index 48e1bed0e..4063c0bc1 100644
+--- a/lib/device/adamnet/adamNetwork.h
++++ b/lib/device/adamnet/adamNetwork.h
+@@ -30,6 +30,12 @@ protected:
+ 
+     // Adam uses variable length packets, no length parameter is passed
+     void fujidev_write(const FUJI_COMMAND_PACKET &packet) override;
++
++    // The Adam's commands carry their single parameter first, where SIO has
++    // aux1 then aux2 and the shared handlers read aux2. Reading the second
++    // slot of a one byte payload asserted and took the PC daemon down.
++    void fujidev_set_parser(const FUJI_COMMAND_PACKET &packet) override;
++    void fujidev_http_set_channel_mode(const FUJI_COMMAND_PACKET &packet) override;
+ };
+ 
+ #endif /* ADAMNETWORK_H */

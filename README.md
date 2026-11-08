@@ -114,6 +114,40 @@ For full details on building static dependencies (`libexpat.a`, `libmbedtls.a`),
 
 ---
 
+## 4a. The Coleco ADAM target
+
+The ADAM core (`ColecoAdam_MiSTer`, branch `fujinet`) is the AdamNet bus master for the
+devices FujiNet-PC serves, over the same HPS UART. Build and install:
+
+```bash
+./build-docker.sh ADAM                      # -> dist/fujinet-adam/ (the COCO dist is untouched)
+scp -r dist/fujinet-adam root@mister.local:/media/fat/fujinet/adam
+scp scripts/uartmode.fujinet root@mister.local:/media/fat/linux/
+```
+
+Then on the MiSTer install `uartmode.fujinet` as `/sbin/uartmode` (see the script's header: the
+root filesystem is read-only). Its mode 8 picks `/media/fat/fujinet/<platform>/` from the core
+name in `/tmp/CORENAME` (`coco` or `adam`), writes the OSD's UART speed into that platform's
+`fnconfig.ini`, and serves the core's games folder as host 1. In the ADAM core: UART connection
+**FujiNet**, speed **115200**, no image in floppy 1, reset: EOS boots FujiNet's CONFIG from disk 1.
+
+What differs from the CoCo:
+* `config/fnconfig-adam.ini`: the serial path (`[BOIP] enabled=0`, `[Serial] port=/dev/ttyS1`).
+  The ADAM PC build defaults to Bus-over-IP, which is what the core's Verilator simulator uses.
+* `patches/0002-adam-serial-port-and-baud-from-config.patch`: upstream's ADAM serial path probed
+  `/dev/ttyUSB0` then `/dev/ttyS0` at a fixed 62,500 baud, waited only 2 ms for the rest of a
+  packet, which a Linux tty does not meet (every block request was NAKed on a MiSTer), and
+  discarded its input for 180 µs after each reply, meant for the one-wire bus's echo, which on
+  Linux landed on the master's next command instead. It now takes `[Serial]` port and baud,
+  waits 100 ms, and does not discard.
+* `patches/0003-ndevice-adam-open-spec-and-parser-without-protocol.patch`: the ADAM's
+  fujinet-lib puts a control byte before the `N:` of a network open spec; the firmware used to
+  strip blindly up to the colon, now it refuses the open, and the program's next command then
+  crashed on the missing protocol. Both fixed; found with `weather.ddp`.
+* `[WiFi] enabled=1` in the config, although there is no WiFi: a TNFS mount stalls after
+  resolving the host without it.
+* No cartridge: CONFIG is on FujiNet's own disk 1, and the ADAM boots from disk 1 by itself.
+
 ## 5. Contributing & Upstream Synchronization
 
 * **Upstream Patches**: The patch in `patches/0001-cmake-expat-python3.patch` ensures POSIX CMake builds correctly find Expat without pkg-config overrides and use `python3`. This will be submitted upstream to `FujiNetWIFI/fujinet-firmware`.
