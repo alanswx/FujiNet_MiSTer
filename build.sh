@@ -63,12 +63,18 @@ CMAKE_ARGS=(
     "-DWITH_MBEDTLS=ON"
     "-DCMAKE_DISABLE_FIND_PACKAGE_GnuTLS=TRUE"
     "-DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=TRUE"
+    # Upstream compiles with -Werror. On 32-bit ARM, GCC's -Wcast-align fires in
+    # vendored libssh (void* casts that are fine on Cortex-A9); keep it a warning.
+    "-DCMAKE_C_FLAGS=-Wno-error=cast-align"
+    "-DCMAKE_CXX_FLAGS=-Wno-error=cast-align"
 )
 
 if [ -d "${EXPAT_DIR}" ]; then
     echo "Using custom Expat: ${EXPAT_DIR}"
+    # CMake < 3.24 FindEXPAT reads EXPAT_LIBRARY; 3.24+ reads EXPAT_LIBRARY_RELEASE.
     CMAKE_ARGS+=(
         "-DEXPAT_INCLUDE_DIR=${EXPAT_DIR}/include"
+        "-DEXPAT_LIBRARY=${EXPAT_DIR}/lib/libexpat.a"
         "-DEXPAT_LIBRARY_RELEASE=${EXPAT_DIR}/lib/libexpat.a"
     )
 fi
@@ -88,7 +94,10 @@ echo "Configuring CMake..."
 cmake "${FUJINET_DIR}" "${CMAKE_ARGS[@]}"
 
 echo "Compiling..."
-make -j"$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)"
+# "fujinet" is the daemon (its unit tests are left out; they are host-only);
+# "build_webui" generates ${BUILD_DIR}/data (web UI, printer fonts, CONFIG
+# boot disks), which no default target produces.
+make -j"$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)" fujinet build_webui
 
 # 6. Package Distribution Bundle
 echo "Packaging distribution into ${DIST_DIR}..."

@@ -33,15 +33,33 @@ This document provides a comprehensive guide for developers on cross-compiling, 
 
 ## 2. Prerequisites & Cross-Compilation Toolchain
 
+### 2.0 Shortcut: build in Docker
+
+If you have Docker (macOS or Linux, Intel or Apple Silicon), skip the rest of
+this section and run:
+
+```bash
+./build-docker.sh COCO
+```
+
+`docker/Dockerfile` installs the Arm GNU toolchain 10.2-2020.11 for the host
+CPU, cross-builds static Expat and Mbed TLS 3.6 into `/opt/deps`, and the
+wrapper runs `./build.sh` with the repository mounted at `/work`. The output is
+`dist/fujinet/`, the same as a native build. The toolchain matches the one the
+previously deployed binary was built with (glibc symbols up to 2.29, which the
+MiSTer Linux image provides).
+
+### 2.1 Native toolchain
+
 Builds are performed on an x86_64 or aarch64 Linux development workstation (e.g. Ubuntu 22.04/24.04).
 
-### 2.1 Required Tools
+#### Required Tools
 ```bash
 sudo apt-get update
 sudo apt-get install -y build-essential cmake git python3 pkg-config libexpat1-dev
 ```
 
-### 2.2 Standard MiSTer ARM Toolchain
+#### Standard MiSTer ARM Toolchain
 Download the Linaro / Arm GNU toolchain for ARMv7-A (`arm-linux-gnueabihf`):
 ```bash
 # Recommended MiSTer GCC 10.2 toolchain:
@@ -56,7 +74,7 @@ export ARM_PREFIX=/opt/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf/bin/
 # export ARM_PREFIX=arm-linux-gnueabihf-
 ```
 
-### 2.3 Cross-Compiling Static Dependencies (Expat & mbedTLS)
+### 2.2 Cross-Compiling Static Dependencies (Expat & mbedTLS)
 
 FujiNet links against `expat` (XML parsing) and `mbedtls` (cryptography/TLS). For an embedded target like MiSTer, static libraries ensure zero external shared library dependencies.
 
@@ -130,6 +148,7 @@ cmake .. \
   -DCMAKE_DISABLE_FIND_PACKAGE_GnuTLS=TRUE \
   -DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=TRUE \
   -DEXPAT_INCLUDE_DIR=$(pwd)/../../deps/expat-install-arm/include \
+  -DEXPAT_LIBRARY=$(pwd)/../../deps/expat-install-arm/lib/libexpat.a \
   -DEXPAT_LIBRARY_RELEASE=$(pwd)/../../deps/expat-install-arm/lib/libexpat.a \
   -DMBEDTLS_ROOT_DIR=$(pwd)/../../deps/mbedtls-install-arm
 

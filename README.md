@@ -41,7 +41,10 @@ FujiNet_MiSTer/
 │   ├── HDBDW3L3_19200.CCC          # HDB-DOS DW3 for CoCo 3 at 19,200 baud
 │   ├── HDBDW3S3.CCC                # HDB-DOS DW3 for CoCo 3 at 115,200 baud
 │   └── HDBDW3CC3.CCC               # Standard HDB-DOS DW3
+├── docker/
+│   └── Dockerfile                  # Cross-build image: Arm GCC 10.2 + static Expat/Mbed TLS
 ├── build.sh                        # Automated cross-compilation & packaging script
+├── build-docker.sh                 # Runs build.sh inside the Docker image (no local toolchain needed)
 ├── Makefile                        # Convenience make targets (build, clean, install)
 ├── HOWTO_MISTER.md                 # Detailed toolchain, build & developer guide
 └── README.md
@@ -80,6 +83,19 @@ If you already have a compiled binary or distribution bundle:
 
 ## 4. Building from Source
 
+### Option A: Docker (macOS or Linux, no toolchain to install)
+
+```bash
+./build-docker.sh COCO
+```
+
+This builds the `fujinet-mister-build` image from `docker/Dockerfile` (Arm GNU
+toolchain 10.2-2020.11, the one MiSTer Main is built with, plus static Expat and
+Mbed TLS cross-built for armhf) and runs `./build.sh COCO` inside it. The output
+lands in `dist/fujinet/` exactly as with the native build below.
+
+### Option B: Native Linux cross-build
+
 To cross-compile the ARM binary from Linux:
 
 ```bash
@@ -100,7 +116,10 @@ For full details on building static dependencies (`libexpat.a`, `libmbedtls.a`),
 ## 5. Contributing & Upstream Synchronization
 
 * **Upstream Patches**: The patch in `patches/0001-cmake-expat-python3.patch` ensures POSIX CMake builds correctly find Expat without pkg-config overrides and use `python3`. This will be submitted upstream to `FujiNetWIFI/fujinet-firmware`.
-* **Updating Submodule**:
+* **Updating Submodule** (upstream `master` is occasionally force-pushed, so reset rather than merge):
   ```bash
-  git submodule update --remote --merge
+  git -C fujinet-firmware fetch origin
+  git -C fujinet-firmware checkout -B master origin/master
+  git -C fujinet-firmware apply --check ../patches/0001-cmake-expat-python3.patch   # confirm the patch still applies
+  ./build-docker.sh COCO
   ```

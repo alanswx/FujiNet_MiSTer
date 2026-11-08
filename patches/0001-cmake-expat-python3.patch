@@ -1,8 +1,8 @@
 diff --git a/fujinet_pc.cmake b/fujinet_pc.cmake
-index 4945ff6..64f51c4 100644
+index 13dfce44b..241aac781 100644
 --- a/fujinet_pc.cmake
 +++ b/fujinet_pc.cmake
-@@ -744,7 +744,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+@@ -818,7 +818,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
  endif()
  
  
@@ -12,7 +12,7 @@ index 4945ff6..64f51c4 100644
  target_link_libraries(fujinet ${CRYPTO_LIBS})
  
  if(DEFINED USE_LIBSERIAL)
-@@ -788,7 +789,7 @@ add_library(gumbo_fn STATIC ${GUMBO_SOURCES})
+@@ -862,7 +863,7 @@ add_library(gumbo_fn STATIC ${GUMBO_SOURCES})
  target_include_directories(gumbo_fn PUBLIC ${CMAKE_SOURCE_DIR}/components/gumbo)
  target_compile_options(gumbo_fn PRIVATE -w) # vendored third-party; suppress its warnings
  
@@ -21,7 +21,7 @@ index 4945ff6..64f51c4 100644
  
  if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
      target_link_libraries(fujinet ws2_32 bcrypt)
-@@ -799,7 +800,7 @@ endif()
+@@ -873,7 +874,7 @@ endif()
  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/include")
  add_custom_target(build_version
      WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
