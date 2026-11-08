@@ -64,6 +64,7 @@ If you already have a compiled binary or distribution bundle:
 2. Start the daemon on MiSTer (SSH to `root@mister.local`):
    ```bash
    /media/fat/fujinet/start_fujinet.sh /dev/ttyS1 19200
+   # optional third argument: the folder served as the SD host, e.g. /media/fat/games/CoCo3
    ```
 
 3. Open the **TRS-80 Color Computer 3 (CoCo 3)** core on MiSTer:

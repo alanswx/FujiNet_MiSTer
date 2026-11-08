@@ -101,6 +101,11 @@ cd ../..
 ```bash
 wget https://github.com/Mbed-TLS/mbedtls/archive/refs/tags/v3.6.0.tar.gz
 tar -xzf v3.6.0.tar.gz && cd mbedtls-3.6.0
+# The bundled libssh initialises Mbed TLS for pthreads. Without these two
+# options the daemon prints "Error in auto_init()" at start and N: SSH/SFTP
+# fail; everything else still runs.
+python3 scripts/config.py set MBEDTLS_THREADING_C
+python3 scripts/config.py set MBEDTLS_THREADING_PTHREAD
 mkdir -p build_arm && cd build_arm
 cmake .. \
   -DCMAKE_C_COMPILER=${ARM_PREFIX}gcc \
@@ -178,7 +183,7 @@ printer_enabled=1
 encrypt_passphrase=0
 
 [WiFi]
-enabled=0
+enabled=1
 
 [Bluetooth]
 enabled=0
@@ -232,6 +237,7 @@ baud=19200
 ```
 
 ### Key Configuration Directives:
+* `[WiFi] enabled`: must be `1` on FujiNet-PC although there is no WiFi. "Starting WiFi" is what starts the web server on port 8000 and marks the network as up for the TNFS hosts; with `0` the daemon runs but nothing listens on port 8000.
 * `port`: Must match the HPS serial device connected to the FPGA core UART. On MiSTer, internal serial is `/dev/ttyS1`.
 * `baud`: Must match the baud rate expected by the retro core firmware/ROM:
   * For CoCo 3 with `HDBDW3L3_19200.CCC`: `19200`
@@ -276,7 +282,11 @@ baud=19200
 Connect to the MiSTer terminal (via SSH or serial console):
 ```bash
 /media/fat/fujinet/start_fujinet.sh /dev/ttyS1 19200
+# or, serving the images already on the card as the SD host (host slot 1):
+/media/fat/fujinet/start_fujinet.sh /dev/ttyS1 19200 /media/fat/games/CoCo3
 ```
+The optional third argument is the folder FujiNet serves as "SD" (`fujinet -s DIR`); the default is `/media/fat/fujinet/SD`. There is no equivalent setting in `fnconfig.ini`: the port and baud come from the INI, only the folder is an argument.
+
 Inspect the startup log:
 ```text
 ### TTY initialized ###
@@ -302,3 +312,8 @@ From any PC or mobile device on the same local network:
    * Browse internet TNFS servers (`tnfs.fujinet.online`).
    * Mount games, OS images, and demos into virtual drives 1 through 4.
    * Access the virtual printer spool.
+
+### Step 5: Returning to CONFIG after booting a disk
+FujiNet puts the CONFIG disk back in drive 0 only when it receives a DriveWire reset opcode (`$FF`, `$FE` or `$F8`, `op_reset()` in `lib/bus/drivewire/drivewire.cpp`). On a real CoCo the bit-banger port emits one when the machine is hardware-reset. The DW3 HDB-DOS cartridges shipped here send nothing at start-up (the toolshed source only sends `OP_DWINIT` for the MegaMini MPI build, and the turbo request only for DW4 builds), and the core's 6551 is silent across a reset, so after CONFIG has booted a disk a reset boots that disk again.
+
+Until the core transmits a reset opcode on reset, the way back is the Web UI: **Restart** (confirm it twice) restarts the daemon with CONFIG in drive 0; then reset the CoCo.

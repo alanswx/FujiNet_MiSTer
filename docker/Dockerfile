@@ -52,6 +52,10 @@ RUN set -e; mkdir -p /tmp/deps && cd /tmp/deps && \
     cd /tmp/deps && \
     wget -q "https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-${MBEDTLS_VER}/mbedtls-${MBEDTLS_VER}.tar.bz2" && \
     tar -xjf "mbedtls-${MBEDTLS_VER}.tar.bz2" && cd "mbedtls-${MBEDTLS_VER}" && \
+    # Threading on: the bundled libssh initialises Mbed TLS for pthreads and
+    # fails (stderr "Error in auto_init()", no SSH/SFTP) when it is built without.
+    python3 scripts/config.py set MBEDTLS_THREADING_C && \
+    python3 scripts/config.py set MBEDTLS_THREADING_PTHREAD && \
     cmake -S . -B build \
         -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=arm \
         -DCMAKE_C_COMPILER=${ARM_PREFIX}gcc -DCMAKE_CXX_COMPILER=${ARM_PREFIX}g++ \
