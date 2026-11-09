@@ -1,8 +1,23 @@
 diff --git a/lib/device/NDevice/NDevice.cpp b/lib/device/NDevice/NDevice.cpp
-index d02ddc20e..6827d3cf2 100644
+index d02ddc20e..feb8f4ae9 100644
 --- a/lib/device/NDevice/NDevice.cpp
 +++ b/lib/device/NDevice/NDevice.cpp
-@@ -474,6 +474,12 @@ void NDevice::fujidev_set_query(const FUJI_COMMAND_PACKET &packet)
+@@ -136,7 +136,14 @@ void NDevice::fujidev_open(const FUJI_COMMAND_PACKET &packet)
+     fileAccessMode_t access = param_cast<fileAccessMode_t>(packet, 0);
+     netProtoTranslation_t trans_mode = param_cast<netProtoTranslation_t>(packet, 1);
+ 
++#ifdef BUILD_ADAM
++    // An Adam packet carries the spec at whatever length the program wrote:
++    // the pre-unification Adam code took all of it, and weather.ddp's forecast
++    // URL is over 500 bytes. 256 cut off its units, daily and timezone fields.
++    std::string spec(1024, 0);
++#else
+     std::string spec(256, 0);
++#endif
+     SYSTEM_BUS.transaction_accept(TRANS_STATE::WILL_GET);
+     if (SYSTEM_BUS.transaction_get(spec).is_error())
+     {
+@@ -474,6 +481,12 @@ void NDevice::fujidev_set_query(const FUJI_COMMAND_PACKET &packet)
  error_is_true NDevice::parse_and_instantiate_protocol(std::string &deviceSpec, bool is_dir,
                                                        std::unique_ptr<PeoplesUrlParser> &url_out)
  {
@@ -15,7 +30,7 @@ index d02ddc20e..6827d3cf2 100644
      deviceSpec = util_devicespec_fix_for_parsing(deviceSpec, prefix, is_dir, true);
      url_out = std::make_unique<PeoplesUrlParser>(deviceSpec);
  
-@@ -532,6 +538,10 @@ void NDevice::fujidev_set_parser(const FUJI_COMMAND_PACKET &packet)
+@@ -532,6 +545,10 @@ void NDevice::fujidev_set_parser(const FUJI_COMMAND_PACKET &packet)
  
  error_is_true NDevice::fujicore_set_parser(parserMode_t mode)
  {
@@ -40,7 +55,7 @@ index 060b2b868..ad1a7f2a9 100644
      // udp ops
      void fujidev_udp_get_remote(const FUJI_COMMAND_PACKET &packet);
 diff --git a/lib/device/adamnet/adamNetwork.cpp b/lib/device/adamnet/adamNetwork.cpp
-index bc6e411c9..eb0e0f47e 100644
+index bc6e411c9..be063d59a 100644
 --- a/lib/device/adamnet/adamNetwork.cpp
 +++ b/lib/device/adamnet/adamNetwork.cpp
 @@ -2,6 +2,7 @@
@@ -51,7 +66,7 @@ index bc6e411c9..eb0e0f47e 100644
  #include "debug.h"
  
  #define MAX_ADAM_PACKET_LEN 1024
-@@ -78,4 +79,35 @@ void adamNetwork::adamnet_control_receive()
+@@ -78,4 +79,46 @@ void adamNetwork::adamnet_control_receive()
      SYSTEM_BUS.transaction_send(buf);
  }
  
@@ -62,9 +77,20 @@ index bc6e411c9..eb0e0f47e 100644
 +
 +    parserMode_t mode = param_cast<parserMode_t>(packet, 0);
 +    if (fujicore_set_parser(mode).is_error())
++    {
 +        SYSTEM_BUS.transaction_error();
-+    else
-+        SYSTEM_BUS.transaction_success();
++        return;
++    }
++
++    // Adam programs take a query's value as it comes, with no line ending:
++    // the pre-unification Adam code set the JSON line ending to "" ("\x00"),
++    // and weather.ddp pastes the latitude straight into its next URL. The
++    // shared JSONParser defaults to "\n", which put a line feed in the middle
++    // of every request built that way.
++    if (mode == PARSER::JSON && _parser != nullptr)
++        _parser->setLineEnding("");
++
++    SYSTEM_BUS.transaction_success();
 +}
 +
 +// 'M': [mode], body or headers

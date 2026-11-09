@@ -175,7 +175,10 @@ elif [ "$1" == "7" ]; then
 elif [ "$1" == "8" ]; then
 	if [ ! -f /tmp/uartmode8 ]; then
 		kill_all
-		echo "1" >/tmp/uartmode8
+		# This run's own token: a loop from an earlier load sees the file recreated by
+		# the next "uartmode 8" and would otherwise respawn a second daemon beside it.
+		token=$$.$(date +%s%N)
+		echo "$token" >/tmp/uartmode8
 		CORE=""
 		[ -f /tmp/CORENAME ] && CORE=$(cat /tmp/CORENAME)
 		plat=$(fujinet_platform "$CORE")
@@ -195,7 +198,7 @@ elif [ "$1" == "8" ]; then
 					echo "no FujiNet build for core '$CORE'"
 					exit 0
 				fi
-				[ ! -f /tmp/uartmode8 ] && exit 0
+				[ "$(cat /tmp/uartmode8 2>/dev/null)" = "$token" ] || exit 0
 				echo respawn fujinet
 				sleep 1
 			done
