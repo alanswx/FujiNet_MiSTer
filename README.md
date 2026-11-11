@@ -121,14 +121,17 @@ devices FujiNet-PC serves, over the same HPS UART. Build and install:
 
 ```bash
 ./build-docker.sh ADAM                      # -> dist/fujinet-adam/ (the COCO dist is untouched)
-scp -r dist/fujinet-adam root@mister.local:/media/fat/fujinet/adam
+scp -r dist/fujinet-adam root@mister.local:/media/fat/fujinet/Adam
 scp scripts/uartmode.fujinet root@mister.local:/media/fat/linux/
 ```
 
 Then on the MiSTer install `uartmode.fujinet` as `/sbin/uartmode` (see the script's header: the
-root filesystem is read-only). Its mode 8 picks `/media/fat/fujinet/<platform>/` from the core
-name in `/tmp/CORENAME` (`coco` or `adam`), writes the OSD's UART speed into that platform's
-`fnconfig.ini`, and serves the core's games folder as host 1. In the ADAM core: UART connection
+root filesystem is read-only). Each core has its own install in a folder named after the core
+(`/tmp/CORENAME`): `/media/fat/fujinet/COCO3/`, `/media/fat/fujinet/Adam/`,
+`/media/fat/fujinet/Studio-II/`. Main (`mac-printer-fujinet`) offers the FujiNet UART connection
+only when the loaded core's folder holds `fujinet` or `launch`, and in FujiNet mode offers the
+speeds the core declares in its CONF_STR. Mode 8 writes that speed into the folder's
+`fnconfig.ini` (or passes it to `launch`) and serves the core's games folder as host 1. In the ADAM core: UART connection
 **FujiNet**, speed **115200**, no image in floppy 1, reset: EOS boots FujiNet's CONFIG from disk 1.
 
 What differs from the CoCo:

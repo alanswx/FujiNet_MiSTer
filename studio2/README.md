@@ -25,8 +25,8 @@ docker run --rm -v "$PWD/..:/work" -w /work/studio2 fujinet-mister-build \
 
 ## Install
 
-- `../dist/fujinet-studio2/` to `/media/fat/fujinet/studio2/`
-- `../scripts/uartmode.fujinet` to `/sbin/uartmode` (it runs `studio2/launch` for the Studio-II core)
+- `../dist/fujinet-studio2/` to `/media/fat/fujinet/Studio-II/` (the core's name: Main and uartmode look for it there)
+- `../scripts/uartmode.fujinet` to `/sbin/uartmode` (it runs `Studio-II/launch` for the Studio-II core)
 - Core: OSD System > FujiNet Cartridge On; Main's UART menu: mode FujiNet, 1562500
 
 ## Test without a MiSTer

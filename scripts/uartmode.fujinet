@@ -1,11 +1,14 @@
 #!/bin/bash
 # /sbin/uartmode with a FujiNet mode (8). Main runs "uartmode <n>" when the OSD's
 # UART connection changes and on every core load, after writing the core's name
-# to /tmp/CORENAME. Mode 8 picks the FujiNet-PC build for that core:
+# to /tmp/CORENAME. Mode 8 runs that core's own FujiNet install, in a folder
+# named after the core (Main offers FujiNet only when it exists):
 #
-#   /media/fat/fujinet/<platform>/fujinet     the daemon, with its data/ and fnconfig.ini
-#   /media/fat/fujinet/<platform>/launch      if present, run instead: "launch SPEED GAMES"
-#                                             (Studio II: FujiNet-PC plus s2cartd)
+#   /media/fat/fujinet/<CORENAME>/fujinet     the daemon, with its data/ and fnconfig.ini
+#   /media/fat/fujinet/<CORENAME>/launch      if present, run instead: "launch SPEED GAMES"
+#                                             (Studio-II: FujiNet-PC plus s2cartd)
+#
+# e.g. /media/fat/fujinet/COCO3, /media/fat/fujinet/Adam, /media/fat/fujinet/Studio-II
 #
 # and points its SD host at the core's games folder, so the images already on the
 # card show up under host 1 in CONFIG. The UART speed Main reports is written into
@@ -36,15 +39,7 @@ conn_speed=115200
 
 echo "ttyS1: "$conn_speed
 
-# Which FujiNet-PC build serves the loaded core, and where its images live
-fujinet_platform() {
-	case "$1" in
-		COCO3|COCO2|CoCo3|CoCo2) echo coco  ;;
-		Adam|ADAM|ColecoAdam)    echo adam  ;;
-		Studio-II|StudioII)      echo studio2 ;;
-		*)                       echo ""    ;;
-	esac
-}
+# Where the loaded core's images live (served as the SD host)
 fujinet_games() {
 	case "$1" in
 		COCO3|COCO2|CoCo3|CoCo2) echo /media/fat/games/CoCo3 ;;
@@ -186,20 +181,17 @@ elif [ "$1" == "8" ]; then
 		echo "$token" >/tmp/uartmode8
 		CORE=""
 		[ -f /tmp/CORENAME ] && CORE=$(cat /tmp/CORENAME)
-		plat=$(fujinet_platform "$CORE")
 		games=$(fujinet_games "$CORE")
-		dir=/media/fat/fujinet/$plat
-		# the original single-platform install, for a core without its own folder
-		[ -n "$plat" ] && [ ! -x "$dir/fujinet" ] && dir=/media/fat/fujinet
+		dir=/media/fat/fujinet/$CORE
 		(
 			while true
 			do
-				if [ -n "$plat" ] && [ -x "$dir/launch" ]; then
+				if [ -n "$CORE" ] && [ -x "$dir/launch" ]; then
 					# a platform with more than one program (a cart daemon beside FujiNet-PC)
 					[ -d "$games" ] || games=/media/fat/fujinet/SD
 					mkdir -p "$games"
 					"$dir/launch" "$conn_speed" "$games" >> /media/fat/fujinet/fujinet.log 2>&1
-				elif [ -n "$plat" ] && [ -x "$dir/fujinet" ]; then
+				elif [ -n "$CORE" ] && [ -x "$dir/fujinet" ]; then
 					sed -i "s/^baud=.*/baud=$conn_speed/" "$dir/fnconfig.ini"
 					[ -d "$games" ] || games=/media/fat/fujinet/SD
 					mkdir -p "$games"
