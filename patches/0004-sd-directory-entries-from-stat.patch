@@ -1,0 +1,26 @@
+diff --git a/lib/FileSystem/fnFsSD.cpp b/lib/FileSystem/fnFsSD.cpp
+index d549b9d28..b377ebac6 100644
+--- a/lib/FileSystem/fnFsSD.cpp
++++ b/lib/FileSystem/fnFsSD.cpp
+@@ -193,15 +193,19 @@ success_is_true FileSystemSDFAT::fill_dircache(const char *path)
+ 
+         uint32_t size = 0;
+         time_t modified_time = 0;
++        // d_type is only a hint: it is DT_LNK for a symlink, DT_UNKNOWN on some
++        // filesystems, and a FAT/exFAT driver reports anything that is not a
++        // real subdirectory as DT_REG. stat() follows links, so ask it first.
++        bool is_dir = d->d_type == DT_DIR || d->d_type == DT_LNK;
+         fpath = _make_fullpath(d->d_name);
+         if(stat(fpath, &s) == 0)
+         {
+             size = s.st_size;
+             modified_time = s.st_mtime;
++            is_dir = S_ISDIR(s.st_mode);
+         }
+         free(fpath);
+-        // Assume symlinks point to directories only
+-        if (_dircache->add_entry(d->d_name, d->d_type == DT_DIR || d->d_type == DT_LNK, size, modified_time).is_error())
++        if (_dircache->add_entry(d->d_name, is_dir, size, modified_time).is_error())
+         {
+             closedir(_dir);
+             RETURN_ERROR_AS_FALSE();

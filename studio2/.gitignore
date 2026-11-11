@@ -1,0 +1,6 @@
+s2cartd
+s2cartd-arm
+*.o
+test/fujinet
+test/data/
+test/SD/

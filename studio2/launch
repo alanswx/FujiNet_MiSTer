@@ -1,0 +1,15 @@
+#!/bin/sh
+# FujiNet for the StudioII core: two programs, one per half of the real cart.
+#   fujinet   FujiNet-PC (FUJINET_TARGET=RS232): the cart's ESP32-S3, BoIP on 127.0.0.1
+#   s2cartd   the cart's RP2354B core0, on the core's UART (/dev/ttyS1)
+# uartmode 8 runs this in its respawn loop: launch SPEED GAMES_DIR
+dir=$(cd "$(dirname "$0")" && pwd)
+speed=${1:-1562500}
+games=${2:-/media/fat/fujinet/SD}
+port=$(sed -n 's/^port=//p' "$dir/fnconfig.ini" | head -1)
+
+cd "$dir" || exit 1
+./fujinet -c "$dir/fnconfig.ini" -s "$games" &
+fn=$!
+trap 'kill $fn 2>/dev/null; wait $fn 2>/dev/null' EXIT INT TERM
+./s2cartd -d /dev/ttyS1 -b "$speed" -t "127.0.0.1:${port:-9995}"

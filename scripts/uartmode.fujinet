@@ -4,6 +4,8 @@
 # to /tmp/CORENAME. Mode 8 picks the FujiNet-PC build for that core:
 #
 #   /media/fat/fujinet/<platform>/fujinet     the daemon, with its data/ and fnconfig.ini
+#   /media/fat/fujinet/<platform>/launch      if present, run instead: "launch SPEED GAMES"
+#                                             (Studio II: FujiNet-PC plus s2cartd)
 #
 # and points its SD host at the core's games folder, so the images already on the
 # card show up under host 1 in CONFIG. The UART speed Main reports is written into
@@ -26,6 +28,7 @@ kill_all() {
 	killall mpg123
 	killall mister_printerd
 	killall fujinet
+	killall s2cartd
 }
 
 conn_speed=115200
@@ -38,6 +41,7 @@ fujinet_platform() {
 	case "$1" in
 		COCO3|COCO2|CoCo3|CoCo2) echo coco  ;;
 		Adam|ADAM|ColecoAdam)    echo adam  ;;
+		Studio-II|StudioII)      echo studio2 ;;
 		*)                       echo ""    ;;
 	esac
 }
@@ -45,6 +49,7 @@ fujinet_games() {
 	case "$1" in
 		COCO3|COCO2|CoCo3|CoCo2) echo /media/fat/games/CoCo3 ;;
 		Adam|ADAM|ColecoAdam)    echo /media/fat/games/Adam  ;;
+		Studio-II|StudioII)      echo /media/fat/games/Studio-II ;;
 		*)                       echo /media/fat/fujinet/SD   ;;
 	esac
 }
@@ -189,7 +194,12 @@ elif [ "$1" == "8" ]; then
 		(
 			while true
 			do
-				if [ -n "$plat" ] && [ -x "$dir/fujinet" ]; then
+				if [ -n "$plat" ] && [ -x "$dir/launch" ]; then
+					# a platform with more than one program (a cart daemon beside FujiNet-PC)
+					[ -d "$games" ] || games=/media/fat/fujinet/SD
+					mkdir -p "$games"
+					"$dir/launch" "$conn_speed" "$games" >> /media/fat/fujinet/fujinet.log 2>&1
+				elif [ -n "$plat" ] && [ -x "$dir/fujinet" ]; then
 					sed -i "s/^baud=.*/baud=$conn_speed/" "$dir/fnconfig.ini"
 					[ -d "$games" ] || games=/media/fat/fujinet/SD
 					mkdir -p "$games"
